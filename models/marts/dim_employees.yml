@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: dim_employees
+    description: >
+      Dimensão de funcionários contendo informações pessoais, dados de localização e dados do gerente associado,
+      a partir de uma junção com o próprio conjunto de dados (`stg_erp_employees`).
+    columns:
+      - name: employee_pk
+        description: Chave primária única de cada funcionário.
+        tests:
+          - not_null
+          - unique
+
+      - name: manager_fk
+        description: Chave estrangeira que referencia o funcionário que é gerente (self-join).
+        tests:
+          - relationships:
+              to: ref('dim_employees')
+              field: employee_pk
+              severity: warn
+
+      - name: employee_name
+        description: Nome do funcionário.
+
+      - name: manager_name
+        description: Nome do gerente do funcionário, obtido por self-join na mesma tabela de origem.
+
+      - name: employee_title
+        description: Cargo ou título do funcionário.
+
+      - name: employee_birth_date
+        description: Data de nascimento do funcionário.
+
+      - name: employee_hire_date
+        description: Data de contratação do funcionário.
+
+      - name: employee_city
+        description: Cidade de residência/trabalho do funcionário.
+
+      - name: employee_region
+        description: Região associada à localização do funcionário.
+
+      - name: employee_country
+        description: País de atuação ou residência do funcionário.
+
