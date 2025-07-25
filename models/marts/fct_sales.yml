@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: >
+      Modelo de fato de vendas exposto a partir do modelo intermediário `int_sales__metrics`.
+      Este modelo existe principalmente para servir como camada final de consumo analítico, 
+      facilitando o versionamento e controle de acesso sem expor diretamente o modelo intermediário.
+
+      Ele traz todas as métricas e dimensões calculadas no modelo `int_sales__metrics`, 
+      incluindo valores brutos, valores líquidos, descontos, alocação de frete e dados 
+      de destinatário.
+    columns:
+      - name: order_item_sk
+        description: "Chave substituta única do item do pedido."
+        tests:
+          - not_null
+          - unique
+
+      - name: product_fk
+        description: "Chave estrangeira referenciando o produto associado ao item do pedido."
+
+      - name: employee_fk
+        description: "Chave estrangeira referenciando o funcionário que processou o pedido."
+
+      - name: customer_fk
+        description: "Chave estrangeira referenciando o cliente associado ao pedido."
+
+      - name: shipper_fk
+        description: "Chave estrangeira referenciando a transportadora utilizada."
+
+      - name: order_date
+        description: "Data em que o pedido foi realizado."
+
+      - name: ship_date
+        description: "Data em que o pedido foi enviado ao cliente."
+
+      - name: required_delivery_date
+        description: "Data solicitada de entrega pelo cliente."
+
+      - name: discount_pct
+        description: "Percentual de desconto aplicado ao item do pedido (0 a 1)."
+
+      - name: unit_price
+        description: "Preço unitário do item antes de descontos."
+
+      - name: quantity
+        description: "Quantidade de itens no pedido."
+
+      - name: gross_total
+        description: "Valor total bruto (unit_price * quantity)."
+
+      - name: net_total
+        description: "Valor líquido após desconto (unit_price * (1 - discount_pct) * quantity)."
+
+      - name: freight_allocated
+        description: >
+          Parcela do frete atribuída ao item, calculada como
+          (freight / número de itens no pedido).
+
+      - name: had_discount
+        description: "Indica se o item teve algum desconto aplicado (true/false)."
+
+      - name: order_number
+        description: "Número do pedido associado ao item."
+
+      - name: recipient_name
+        description: "Nome do destinatário do pedido."
+
+      - name: recipient_city
+        description: "Cidade de entrega do pedido."
+
+      - name: recipient_region
+        description: "Região de entrega do pedido."
+
+      - name: recipient_country
+        description: "País de entrega do pedido."
